@@ -30,6 +30,8 @@ public class BoardController : MonoBehaviour
         _numberOfObstacles = (size * size) / 10;
         _boardSize = size;
         CreateObstacles(_numberOfObstacles);
+
+        CreateStartAndEndPoint();
     }
     
     private void CreateTiles(int size)
@@ -89,5 +91,21 @@ public class BoardController : MonoBehaviour
         newTile.transform.position = new Vector3(obstaclePos.x, obstaclePos.y, 0);
         newTile.GetComponent<Tile>().SetTileType(TileTypes.Obstacle1x1);
         _tilesInUse.Add(newTile);
+    }
+    private void CreateStartAndEndPoint()
+    {
+        var startPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
+        AvailableGridPositions.Remove(startPoint);
+        var newTile = TileObjectPool.GetTile();
+        newTile.transform.position = new Vector3(startPoint.x, startPoint.y, 0);
+        newTile.GetComponent<Tile>().SetTileType(TileTypes.StartPoint);
+        _tilesInUse.Add(newTile);
+
+        var endPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
+        AvailableGridPositions.Remove(endPoint);
+        var newTileEnd = TileObjectPool.GetTile();
+        newTileEnd.transform.position = new Vector3(endPoint.x, endPoint.y, 0);
+        newTileEnd.GetComponent<Tile>().SetTileType(TileTypes.EndPoint);
+        _tilesInUse.Add(newTileEnd);
     }
 }
