@@ -21,6 +21,7 @@ public class BoardController : MonoBehaviour
         foreach(var tile in _tilesInUse)
         {
             tile.SetActive(false);
+            tile.GetComponent<Tile>().SetTileType(TileTypes.Floor);
         }
         _tilesInUse.Clear();
         AvailableGridPositions.Clear();
