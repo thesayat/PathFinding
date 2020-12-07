@@ -14,6 +14,8 @@ public class BoardController : MonoBehaviour
     private List<GameObject> _tilesInUse = new List<GameObject>();
 
     private int _numberOfObstacles;
+    private int _boardSize;
+
 
     public void CreateBoard(int size){
         foreach(var tile in _tilesInUse)
@@ -26,7 +28,7 @@ public class BoardController : MonoBehaviour
         CreateTiles(size);
 
         _numberOfObstacles = (size * size) / 10;
-
+        _boardSize = size;
         CreateObstacles(_numberOfObstacles);
     }
     
@@ -51,7 +53,7 @@ public class BoardController : MonoBehaviour
         for(int i = 0; i < numberOfObstacles; ++i)
         {
             var obstaclePos = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
-            TileTypes tileType = (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x1);
+            TileTypes tileType = adjustTileTypeDependOnBorderConditions(obstaclePos, (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x1));
 
             CreateSingleObstacle(obstaclePos);
 
@@ -64,6 +66,15 @@ public class BoardController : MonoBehaviour
                 CreateSingleObstacle(obstaclePos + new Vector2(1f, 0f));
             }
         }
+    }
+    private TileTypes adjustTileTypeDependOnBorderConditions(Vector2 obstaclePos, TileTypes tileType)
+    {
+        if (((int)obstaclePos.x == (_boardSize - 1) && tileType == TileTypes.Obstacle2x1) ||
+            ((int)obstaclePos.y == (_boardSize - 1) && tileType == TileTypes.Obstacle1x2))
+        {
+            return TileTypes.Obstacle1x1;
+        }
+        return tileType;
     }
     private void CreateSingleObstacle(Vector2 obstaclePos)
     {
