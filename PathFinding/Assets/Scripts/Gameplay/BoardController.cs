@@ -53,7 +53,7 @@ public class BoardController : MonoBehaviour
         for(int i = 0; i < numberOfObstacles; ++i)
         {
             var obstaclePos = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
-            TileTypes tileType = adjustTileTypeDependOnBorderConditions(obstaclePos, (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x1));
+            TileTypes tileType = AdjustTileTypeDependOnBorderConditions(obstaclePos, (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x2));
 
             CreateSingleObstacle(obstaclePos);
 
@@ -65,12 +65,18 @@ public class BoardController : MonoBehaviour
             {
                 CreateSingleObstacle(obstaclePos + new Vector2(1f, 0f));
             }
+            else if (tileType == TileTypes.Obstacle2x2)
+            {
+                CreateSingleObstacle(obstaclePos + new Vector2(0f, 1f));
+                CreateSingleObstacle(obstaclePos + new Vector2(1f, 0f));
+                CreateSingleObstacle(obstaclePos + new Vector2(1f, 1f));
+            }
         }
     }
-    private TileTypes adjustTileTypeDependOnBorderConditions(Vector2 obstaclePos, TileTypes tileType)
+    private TileTypes AdjustTileTypeDependOnBorderConditions(Vector2 obstaclePos, TileTypes tileType)
     {
-        if (((int)obstaclePos.x == (_boardSize - 1) && tileType == TileTypes.Obstacle2x1) ||
-            ((int)obstaclePos.y == (_boardSize - 1) && tileType == TileTypes.Obstacle1x2))
+        if (((int)obstaclePos.x == (_boardSize - 1) && (tileType == TileTypes.Obstacle2x1 || tileType == TileTypes.Obstacle2x2)) ||
+            ((int)obstaclePos.y == (_boardSize - 1) && (tileType == TileTypes.Obstacle1x2 || tileType == TileTypes.Obstacle2x2)))
         {
             return TileTypes.Obstacle1x1;
         }
