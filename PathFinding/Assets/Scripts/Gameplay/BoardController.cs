@@ -13,7 +13,9 @@ public class BoardController : MonoBehaviour
 
     private List<GameObject> _tilesInUse = new List<GameObject>();
 
-    public void CreateBoard(int size = 10){
+    private int _numberOfObstacles;
+
+    public void CreateBoard(int size){
         foreach(var tile in _tilesInUse)
         {
             tile.SetActive(false);
@@ -21,10 +23,14 @@ public class BoardController : MonoBehaviour
         _tilesInUse.Clear();
         AvailableGridPositions.Clear();
 
-        CreateTilesPositions(size);
+        CreateTiles(size);
+
+        _numberOfObstacles = (size * size) / 10;
+
+        CreateObstacles(_numberOfObstacles);
     }
     
-    private void CreateTilesPositions(int size)
+    private void CreateTiles(int size)
     {
         for (int i = 0; i < size; ++i)
         {
@@ -39,5 +45,32 @@ public class BoardController : MonoBehaviour
                 _tilesInUse.Add(newTile);
             }
         }
+    }
+    private void CreateObstacles(int numberOfObstacles)
+    {
+        for(int i = 0; i < numberOfObstacles; ++i)
+        {
+            var obstaclePos = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
+            TileTypes tileType = (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x1);
+
+            CreateSingleObstacle(obstaclePos);
+
+            if (tileType == TileTypes.Obstacle1x2)
+            {
+                CreateSingleObstacle(obstaclePos + new Vector2(0f, 1f));
+            }
+            else if (tileType == TileTypes.Obstacle2x1)
+            {
+                CreateSingleObstacle(obstaclePos + new Vector2(1f, 0f));
+            }
+        }
+    }
+    private void CreateSingleObstacle(Vector2 obstaclePos)
+    {
+        AvailableGridPositions.Remove(obstaclePos);
+        var newTile = TileObjectPool.GetTile();
+        newTile.transform.position = new Vector3(obstaclePos.x, obstaclePos.y, 0);
+        newTile.GetComponent<Tile>().SetTileType(TileTypes.Obstacle1x1);
+        _tilesInUse.Add(newTile);
     }
 }
