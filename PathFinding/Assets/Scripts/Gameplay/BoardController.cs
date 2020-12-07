@@ -1,34 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BoardController : MonoBehaviour
 {
-    [Header("Tiles Prefabs")]
-    public GameObject FloorPrefab;
-    public GameObject ObstaclePrefab;
-    public GameObject StartPrefab;
-    public GameObject EndPrefab;
 
+    public TileObjectPool TileObjectPool;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        CreateBoard();
-    }
+    [HideInInspector]
+    public List<Vector2> AvailableGridPositions;
 
-    // Update is called once per frame
-    void Update()
-    {
+    private List<GameObject> _tilesInUse = new List<GameObject>();
 
-    }
     public void CreateBoard(int size = 10){
-        for(int i = 0; i < size; ++i){
+        foreach(var tile in _tilesInUse)
+        {
+            tile.SetActive(false);
+        }
+        _tilesInUse.Clear();
 
-            for(int j = 0; j < size; ++j){
-                Instantiate(FloorPrefab, new Vector3(i, j, 0), Quaternion.identity);
+        CreateTilesPositions(size);
+    }
+    
+    private void CreateTilesPositions(int size)
+    {
+        for (int i = 0; i < size; ++i)
+        {
+            for (int j = 0; j < size; ++j)
+            {
+                var newPos = new Vector2(i, j);
+                AvailableGridPositions.Add(newPos);
+
+                var newTile = TileObjectPool.GetTile();
+                newTile.transform.Translate(new Vector3(newPos.x, newPos.y, 0));
+
+                _tilesInUse.Add(newTile);
             }
         }
     }
-
 }

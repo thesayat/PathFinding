@@ -604,7 +604,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -658,6 +658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0757430c4d0b23047a61b91d43d5d4cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BoardController: {fileID: 946233892}
 --- !u!4 &713373665
 Transform:
   m_ObjectHideFlags: 0
@@ -968,20 +969,32 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 4
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 713373664}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
+        m_MethodName: RebuildBoard
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -1085,10 +1098,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d7b04acd491fb84c9d4873257b2b7c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FloorPrefab: {fileID: 5137978783986667941, guid: 401c20ed8c8118347b32f6afd63d172b, type: 3}
-  ObstaclePrefab: {fileID: 8364425154184398732, guid: 8d0c608b9d97c1e4cb0984900c800cf5, type: 3}
-  StartPrefab: {fileID: 2139605885834705181, guid: dac78cd22c7e71749b0e690658d943f7, type: 3}
-  EndPrefab: {fileID: 3501502117912243974, guid: 7d6bec1550e05994682b47ca8157dc4f, type: 3}
+  TileObjectPool: {fileID: 1042884986}
+  AvailableGridPositions: []
 --- !u!4 &946233893
 Transform:
   m_ObjectHideFlags: 0
@@ -1102,6 +1113,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1042884985
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1042884987}
+  - component: {fileID: 1042884986}
+  m_Layer: 0
+  m_Name: TilesObjectPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1042884986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042884985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f05a841ee4c89545b5a94fa1f87b7b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TilePrefab: {fileID: 5137978783986667941, guid: 7544ef3f665341a4eb5f4d40e2b932cb, type: 3}
+  Tiles: []
+--- !u!4 &1042884987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042884985}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1147084891
 GameObject:
