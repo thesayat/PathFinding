@@ -9,7 +9,7 @@ public class BoardController : MonoBehaviour
     public TileObjectPool TileObjectPool;
 
     [HideInInspector]
-    public List<Vector2> AvailableGridPositions;
+    public List<Vector2> AvailableGridPositions = new List<Vector2>();
 
     private List<GameObject> _tilesInUse = new List<GameObject>();
 
@@ -19,6 +19,7 @@ public class BoardController : MonoBehaviour
             tile.SetActive(false);
         }
         _tilesInUse.Clear();
+        AvailableGridPositions.Clear();
 
         CreateTilesPositions(size);
     }
@@ -33,7 +34,7 @@ public class BoardController : MonoBehaviour
                 AvailableGridPositions.Add(newPos);
 
                 var newTile = TileObjectPool.GetTile();
-                newTile.transform.Translate(new Vector3(newPos.x, newPos.y, 0));
+                newTile.transform.position = new Vector3(newPos.x, newPos.y, 0);
 
                 _tilesInUse.Add(newTile);
             }
