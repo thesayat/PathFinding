@@ -15,7 +15,8 @@ public class BoardController : MonoBehaviour
 
     private int _numberOfObstacles;
     private int _boardSize;
-
+    private Vector2 _startPoint;
+    private Vector2 _endPoint;
 
     public void CreateBoard(int size){
         foreach(var tile in _tilesInUse)
@@ -95,18 +96,27 @@ public class BoardController : MonoBehaviour
     }
     private void CreateStartAndEndPoint()
     {
-        var startPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
-        AvailableGridPositions.Remove(startPoint);
+        _startPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
+        AvailableGridPositions.Remove(_startPoint);
         var newTile = TileObjectPool.GetTile();
-        newTile.transform.position = new Vector3(startPoint.x, startPoint.y, 0);
+        newTile.transform.position = new Vector3(_startPoint.x, _startPoint.y, 0);
         newTile.GetComponent<Tile>().SetTileType(TileTypes.StartPoint);
         _tilesInUse.Add(newTile);
 
-        var endPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
-        AvailableGridPositions.Remove(endPoint);
+        _endPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
+        AvailableGridPositions.Remove(_endPoint);
         var newTileEnd = TileObjectPool.GetTile();
-        newTileEnd.transform.position = new Vector3(endPoint.x, endPoint.y, 0);
+        newTileEnd.transform.position = new Vector3(_endPoint.x, _endPoint.y, 0);
         newTileEnd.GetComponent<Tile>().SetTileType(TileTypes.EndPoint);
         _tilesInUse.Add(newTileEnd);
+    }
+    public bool SolveBoard(IPathFindingAlgorithm solver)
+    {
+        var path = solver.SolvePath(_startPoint, _endPoint, AvailableGridPositions);
+        if(path.Count == 0)
+        {
+            return false;
+        }
+        return true;
     }
 }
