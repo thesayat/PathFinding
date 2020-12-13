@@ -56,18 +56,18 @@ public class AStarPathFindingAlgorithm : IPathFindingAlgorithm
 
             foreach (var neighbour in tileNeighbours)
             {
-                if (visitedTiles.Contains(neighbour))
+                if (visitedTiles.Any(x => x.ID == neighbour.ID))
                 {
                     continue;
                 }
                 float newCostToNeighbour = currentTile.GCost + GetDistance(currentTile.Position, neighbour.Position);
-                if (newCostToNeighbour < neighbour.GCost || !activeTiles.Contains(neighbour))
+                if (newCostToNeighbour < neighbour.GCost || !activeTiles.Any(x => x.ID == neighbour.ID))
                 {
                     neighbour.GCost = newCostToNeighbour;
                     neighbour.HCost = GetDistance(neighbour.Position, endTile.Position);
                     neighbour.Parent = currentTile;
 
-                    if (!activeTiles.Contains(neighbour))
+                    if (!activeTiles.Any(x => x.ID == neighbour.ID))
                         activeTiles.Add(neighbour);
                 }
             }

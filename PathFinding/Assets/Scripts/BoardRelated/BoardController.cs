@@ -132,7 +132,6 @@ public class BoardController : MonoBehaviour
 
         path.ForEach(x =>
         {
-            Debug.Log($"path element {x.Position.x} {x.Position.y}");
             var newTile = TileObjectPool.GetTile();
             newTile.transform.position = new Vector3(x.Position.x, x.Position.y, 0);
             newTile.GetComponent<Tile>().SetTileType(TileTypes.Path);
