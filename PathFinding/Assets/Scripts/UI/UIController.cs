@@ -6,6 +6,7 @@ public class UIController : MonoBehaviour
 {
     public BoardController BoardController;
     public SolveAlgorithmFactory SolveAlgorithmFactory;
+    public GameObject PathNotFoundPopup;
 
     public void SetBoardSize(string size)
     {
@@ -27,6 +28,11 @@ public class UIController : MonoBehaviour
     }
     public void Solve()
     {
-        BoardController.SolveBoard();
+        bool pathFound = BoardController.SolveBoard();
+
+        if (!pathFound)
+        {
+            PathNotFoundPopup.SetActive(true);
+        }
     }
 }
