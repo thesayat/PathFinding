@@ -112,21 +112,29 @@ public class BoardController : MonoBehaviour
     }
     public bool SolveBoard(IPathFindingAlgorithm solver)
     {
-        var path = solver.SolvePath(_startPoint, _endPoint, AvailableGridPositions);
-        if(path.Count == 0)
+        var availablePositionsWithStartEndPoints = new List<GridElement>(AvailableGridPositions);
+        availablePositionsWithStartEndPoints.Add(_startPoint);
+        availablePositionsWithStartEndPoints.Add(_endPoint);
+
+        var path = solver.SolvePath(_startPoint, _endPoint, availablePositionsWithStartEndPoints);
+
+        if(pathIsEmpty(path))
         {
             return false;
         }
 
-        foreach (var item in path)
+        path.ForEach(x =>
         {
-            Debug.Log($"path pos {item.Position.x} {item.Position.y}");
             var newTile = TileObjectPool.GetTile();
-            newTile.transform.position = new Vector3(item.Position.x, item.Position.y, 0);
+            newTile.transform.position = new Vector3(x.Position.x, x.Position.y, 0);
             newTile.GetComponent<Tile>().SetTileType(TileTypes.Path);
             _tilesInUse.Add(newTile);
-        }
+        });
 
         return true;
+    }
+    private bool pathIsEmpty(List<GridElement> path)
+    {
+        return (path != null && path.Count == 0);
     }
 }

@@ -12,7 +12,11 @@ public class GridElement
         ID = id;
         Position = pos;
     }
-
+    public GridElement(GridElement other)
+    {
+        ID = other.ID;
+        Position = other.Position;
+    }
     public static GridElement operator+(GridElement gridElement, Vector2 vec)
     {
         gridElement.Position += vec;
