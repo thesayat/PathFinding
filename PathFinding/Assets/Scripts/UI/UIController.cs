@@ -7,14 +7,26 @@ public class UIController : MonoBehaviour
     public BoardController BoardController;
     public SolveAlgorithmFactory SolveAlgorithmFactory;
 
-    public void RebuildBoard(string size)
+    public void SetBoardSize(string size)
     {
-        BoardController.CreateBoard(int.Parse(size));
+        BoardController.SetBoardSize(int.Parse(size));
     }
-    public void Solve(int choosenAlgorithm)
+
+    public void RebuildBoard()
     {
-        Debug.Log($"solver {choosenAlgorithm}");
+        BoardController.CreateBoard();
+    }
+
+    public void SetBoardSolver(int choosenAlgorithm)
+    {
         IPathFindingAlgorithm solver = SolveAlgorithmFactory.GetPathFindingAlgorithm((PathFindingAlgorithms)choosenAlgorithm);
-        BoardController.SolveBoard(solver);
+        if(solver != null)
+        {
+            BoardController.SetBoardSolver(solver);
+        }
+    }
+    public void Solve()
+    {
+        BoardController.SolveBoard();
     }
 }

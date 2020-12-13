@@ -46,7 +46,13 @@ public class AStarPathFindingAlgorithm : IPathFindingAlgorithm
 
             var tileNeighboursPos = GetAdjacentTiles(currentTile as GridElement, freePositions);
             var tileNeighbours = new List<AStarGridElement>();
-            tileNeighboursPos.ForEach(x => tileNeighbours.Add(new AStarGridElement(x)));
+            tileNeighboursPos.ForEach(x =>
+            {
+                if(x.ID != startPoint.ID)
+                {
+                    tileNeighbours.Add(new AStarGridElement(x));
+                }
+            });
 
             foreach (var neighbour in tileNeighbours)
             {

@@ -16,8 +16,9 @@ public class BoardController : MonoBehaviour
     private int _boardSize;
     private GridElement _startPoint;
     private GridElement _endPoint;
+    private IPathFindingAlgorithm _solver;
 
-    public void CreateBoard(int size){
+    public void CreateBoard(){
         foreach(var tile in _tilesInUse)
         {
             tile.SetActive(false);
@@ -26,10 +27,9 @@ public class BoardController : MonoBehaviour
         _tilesInUse.Clear();
         AvailableGridPositions.Clear();
 
-        CreateTiles(size);
+        CreateTiles(_boardSize);
 
-        _numberOfObstacles = (size * size) / 10;
-        _boardSize = size;
+        _numberOfObstacles = (_boardSize * _boardSize) / 5;
         CreateObstacles(_numberOfObstacles);
 
         CreateStartAndEndPoint();
@@ -88,7 +88,14 @@ public class BoardController : MonoBehaviour
     }
     private void CreateSingleObstacle(GridElement obstaclePos)
     {
-        AvailableGridPositions.Remove(obstaclePos);
+        var possiblePos = AvailableGridPositions.Where(x => x.Position.Equals(obstaclePos.Position)).ToList();
+
+        if(possiblePos.Count == 0)
+        {
+            return;
+        }
+
+        AvailableGridPositions.Remove(possiblePos[0]);
         var newTile = TileObjectPool.GetTile();
         newTile.transform.position = new Vector3(obstaclePos.Position.x, obstaclePos.Position.y, 0);
         newTile.GetComponent<Tile>().SetTileType(TileTypes.Obstacle1x1);
@@ -110,13 +117,13 @@ public class BoardController : MonoBehaviour
         newTileEnd.GetComponent<Tile>().SetTileType(TileTypes.EndPoint);
         _tilesInUse.Add(newTileEnd);
     }
-    public bool SolveBoard(IPathFindingAlgorithm solver)
+    public bool SolveBoard()
     {
         var availablePositionsWithStartEndPoints = new List<GridElement>(AvailableGridPositions);
         availablePositionsWithStartEndPoints.Add(_startPoint);
         availablePositionsWithStartEndPoints.Add(_endPoint);
 
-        var path = solver.SolvePath(_startPoint, _endPoint, availablePositionsWithStartEndPoints);
+        var path = _solver.SolvePath(_startPoint, _endPoint, availablePositionsWithStartEndPoints);
 
         if(pathIsEmpty(path))
         {
@@ -125,6 +132,7 @@ public class BoardController : MonoBehaviour
 
         path.ForEach(x =>
         {
+            Debug.Log($"path element {x.Position.x} {x.Position.y}");
             var newTile = TileObjectPool.GetTile();
             newTile.transform.position = new Vector3(x.Position.x, x.Position.y, 0);
             newTile.GetComponent<Tile>().SetTileType(TileTypes.Path);
@@ -136,5 +144,13 @@ public class BoardController : MonoBehaviour
     private bool pathIsEmpty(List<GridElement> path)
     {
         return (path != null && path.Count == 0);
+    }
+    public void SetBoardSize(int boardSize)
+    {
+        _boardSize = boardSize;
+    }
+    public void SetBoardSolver(IPathFindingAlgorithm solver)
+    {
+        _solver = solver;
     }
 }
