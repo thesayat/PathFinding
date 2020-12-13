@@ -24,6 +24,8 @@ public class Tile : MonoBehaviour
 	{
 		switch (TileType)
 		{
+			case TileTypes.Path:
+				return Color.green;
 			case TileTypes.StartPoint:
 				return Color.yellow;
 			case TileTypes.EndPoint:

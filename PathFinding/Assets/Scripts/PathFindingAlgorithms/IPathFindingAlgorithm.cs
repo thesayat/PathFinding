@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class IPathFindingAlgorithm
 {
-    public abstract List<Vector2> SolvePath(Vector2 startPoint, Vector2 endPoint, List<Vector2> freePositions);
+    public abstract List<GridElement> SolvePath(GridElement startPoint, GridElement endPoint, List<GridElement> freePositions);
 }

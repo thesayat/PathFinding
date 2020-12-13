@@ -5,18 +5,17 @@ using System.Linq;
 
 public class BoardController : MonoBehaviour
 {
-
     public TileObjectPool TileObjectPool;
 
     [HideInInspector]
-    public List<Vector2> AvailableGridPositions = new List<Vector2>();
+    public List<GridElement> AvailableGridPositions = new List<GridElement>();
 
     private List<GameObject> _tilesInUse = new List<GameObject>();
 
     private int _numberOfObstacles;
     private int _boardSize;
-    private Vector2 _startPoint;
-    private Vector2 _endPoint;
+    private GridElement _startPoint;
+    private GridElement _endPoint;
 
     public void CreateBoard(int size){
         foreach(var tile in _tilesInUse)
@@ -38,12 +37,13 @@ public class BoardController : MonoBehaviour
     
     private void CreateTiles(int size)
     {
+        int elementID = 0;
         for (int i = 0; i < size; ++i)
         {
             for (int j = 0; j < size; ++j)
             {
                 var newPos = new Vector2(i, j);
-                AvailableGridPositions.Add(newPos);
+                AvailableGridPositions.Add(new GridElement(elementID++, newPos));
 
                 var newTile = TileObjectPool.GetTile();
                 newTile.transform.position = new Vector3(newPos.x, newPos.y, 0);
@@ -57,7 +57,7 @@ public class BoardController : MonoBehaviour
         for(int i = 0; i < numberOfObstacles; ++i)
         {
             var obstaclePos = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
-            TileTypes tileType = AdjustTileTypeDependOnBorderConditions(obstaclePos, (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x2));
+            TileTypes tileType = AdjustTileTypeDependOnBorderConditions(obstaclePos.Position, (TileTypes)Random.Range((int)TileTypes.Obstacle1x1, (int)TileTypes.Obstacle2x2));
 
             CreateSingleObstacle(obstaclePos);
 
@@ -86,11 +86,11 @@ public class BoardController : MonoBehaviour
         }
         return tileType;
     }
-    private void CreateSingleObstacle(Vector2 obstaclePos)
+    private void CreateSingleObstacle(GridElement obstaclePos)
     {
         AvailableGridPositions.Remove(obstaclePos);
         var newTile = TileObjectPool.GetTile();
-        newTile.transform.position = new Vector3(obstaclePos.x, obstaclePos.y, 0);
+        newTile.transform.position = new Vector3(obstaclePos.Position.x, obstaclePos.Position.y, 0);
         newTile.GetComponent<Tile>().SetTileType(TileTypes.Obstacle1x1);
         _tilesInUse.Add(newTile);
     }
@@ -99,14 +99,14 @@ public class BoardController : MonoBehaviour
         _startPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
         AvailableGridPositions.Remove(_startPoint);
         var newTile = TileObjectPool.GetTile();
-        newTile.transform.position = new Vector3(_startPoint.x, _startPoint.y, 0);
+        newTile.transform.position = new Vector3(_startPoint.Position.x, _startPoint.Position.y, 0);
         newTile.GetComponent<Tile>().SetTileType(TileTypes.StartPoint);
         _tilesInUse.Add(newTile);
 
         _endPoint = AvailableGridPositions[Random.Range(0, AvailableGridPositions.Count - 1)];
         AvailableGridPositions.Remove(_endPoint);
         var newTileEnd = TileObjectPool.GetTile();
-        newTileEnd.transform.position = new Vector3(_endPoint.x, _endPoint.y, 0);
+        newTileEnd.transform.position = new Vector3(_endPoint.Position.x, _endPoint.Position.y, 0);
         newTileEnd.GetComponent<Tile>().SetTileType(TileTypes.EndPoint);
         _tilesInUse.Add(newTileEnd);
     }
@@ -117,6 +117,16 @@ public class BoardController : MonoBehaviour
         {
             return false;
         }
+
+        foreach (var item in path)
+        {
+            Debug.Log($"path pos {item.Position.x} {item.Position.y}");
+            var newTile = TileObjectPool.GetTile();
+            newTile.transform.position = new Vector3(item.Position.x, item.Position.y, 0);
+            newTile.GetComponent<Tile>().SetTileType(TileTypes.Path);
+            _tilesInUse.Add(newTile);
+        }
+
         return true;
     }
 }
